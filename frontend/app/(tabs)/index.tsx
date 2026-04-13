@@ -6,6 +6,18 @@ import { Ionicons } from '@expo/vector-icons';
 import { TopicSummary } from '../../types';
 import { api } from '../../utils/api';
 
+const TOPIC_THEMES: Record<string, { gradient: string; accent: string; iconBg: string }> = {
+  protein: { gradient: '#FFF0E8', accent: '#C8441A', iconBg: '#FFE0CC' },
+  carbs: { gradient: '#FFF8E1', accent: '#B8860B', iconBg: '#FFE8A0' },
+  fats: { gradient: '#F3EDE4', accent: '#7A1A2E', iconBg: '#F0D8C8' },
+};
+
+const TOPIC_ICONS: Record<string, string> = {
+  protein: 'fitness',
+  carbs: 'nutrition',
+  fats: 'water',
+};
+
 export default function HomeScreen() {
   const [topics, setTopics] = useState<TopicSummary[]>([]);
   const [loading, setLoading] = useState(true);
@@ -32,18 +44,20 @@ export default function HomeScreen() {
   if (loading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#C8441A" />
+        <ActivityIndicator testID="home-loader" size="large" color="#C8441A" />
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false} testID="home-scroll">
         {/* Header */}
         <View style={styles.header}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logoEmoji}>🥗</Text>
+            <View style={styles.logoIconWrap}>
+              <Ionicons name="leaf" size={22} color="#4CAF50" />
+            </View>
             <Text style={styles.logoText}>Nutrients Story</Text>
           </View>
         </View>
@@ -51,7 +65,7 @@ export default function HomeScreen() {
         {/* Hero Section */}
         <View style={styles.hero}>
           <Text style={styles.heroSubtitle}>Learn about</Text>
-          <Text style={styles.heroTitle}>Nutrients Story</Text>
+          <Text style={styles.heroTitle}>Nutrients{'\n'}Story</Text>
           <Text style={styles.heroDescription}>
             Swipe through beautifully designed cards about the three essential macronutrients — built for Indian audiences.
           </Text>
@@ -59,23 +73,30 @@ export default function HomeScreen() {
 
         {/* Topic Cards */}
         <View style={styles.topicsContainer}>
-          {topics.map((topic) => (
-            <TouchableOpacity
-              key={topic.topic_id}
-              style={styles.topicCard}
-              onPress={() => navigateToTopic(topic.key)}
-              activeOpacity={0.7}
-            >
-              <View style={styles.topicEmoji}>
-                <Text style={styles.topicEmojiText}>{topic.emoji}</Text>
-              </View>
-              <View style={styles.topicInfo}>
-                <Text style={styles.topicTitle}>{topic.title}</Text>
-                <Text style={styles.topicDescription}>{topic.description}</Text>
-              </View>
-              <Ionicons name="chevron-forward" size={24} color="#888" />
-            </TouchableOpacity>
-          ))}
+          {topics.map((topic) => {
+            const theme = TOPIC_THEMES[topic.key] || TOPIC_THEMES.protein;
+            const iconName = TOPIC_ICONS[topic.key] || 'help-circle';
+            return (
+              <TouchableOpacity
+                key={topic.topic_id}
+                testID={`topic-card-${topic.key}`}
+                style={[styles.topicCard, { backgroundColor: theme.gradient }]}
+                onPress={() => navigateToTopic(topic.key)}
+                activeOpacity={0.7}
+              >
+                <View style={[styles.topicIconWrap, { backgroundColor: theme.iconBg }]}>
+                  <Text style={styles.topicEmoji}>{topic.emoji}</Text>
+                </View>
+                <View style={styles.topicInfo}>
+                  <Text style={styles.topicTitle}>{topic.title}</Text>
+                  <Text style={styles.topicDescription}>{topic.description}</Text>
+                </View>
+                <View style={[styles.topicArrow, { backgroundColor: theme.accent }]}>
+                  <Ionicons name="chevron-forward" size={18} color="#FFF" />
+                </View>
+              </TouchableOpacity>
+            );
+          })}
         </View>
 
         {/* Footer */}
@@ -99,75 +120,77 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAF9F7',
   },
   header: {
-    padding: 16,
-    paddingTop: 8,
+    paddingHorizontal: 20,
+    paddingTop: 12,
+    paddingBottom: 8,
   },
   logoContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 10,
   },
-  logoEmoji: {
-    fontSize: 32,
+  logoIconWrap: {
+    width: 40,
+    height: 40,
+    borderRadius: 12,
+    backgroundColor: '#E8F5E9',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   logoText: {
-    fontSize: 24,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: '800',
     color: '#1A120A',
   },
   hero: {
-    padding: 24,
-    paddingTop: 16,
+    paddingHorizontal: 24,
+    paddingTop: 24,
+    paddingBottom: 16,
   },
   heroSubtitle: {
-    fontSize: 16,
-    color: '#666',
+    fontSize: 15,
+    color: '#888',
     marginBottom: 4,
+    fontWeight: '500',
   },
   heroTitle: {
-    fontSize: 36,
-    fontWeight: '700',
+    fontSize: 40,
+    fontWeight: '800',
     color: '#1A120A',
     marginBottom: 12,
+    lineHeight: 46,
   },
   heroDescription: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#555',
+    fontSize: 15,
+    lineHeight: 23,
+    color: '#666',
   },
   topicsContainer: {
-    padding: 16,
-    gap: 16,
+    paddingHorizontal: 20,
+    gap: 14,
   },
   topicCard: {
     flexDirection: 'row',
-    backgroundColor: '#FFF',
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 3,
   },
-  topicEmoji: {
+  topicIconWrap: {
     width: 56,
     height: 56,
-    borderRadius: 28,
-    backgroundColor: '#F5F5F5',
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    marginRight: 14,
   },
-  topicEmojiText: {
+  topicEmoji: {
     fontSize: 28,
   },
   topicInfo: {
     flex: 1,
   },
   topicTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '700',
     color: '#1A120A',
     marginBottom: 4,
@@ -177,12 +200,21 @@ const styles = StyleSheet.create({
     color: '#666',
     lineHeight: 18,
   },
+  topicArrow: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginLeft: 8,
+  },
   footer: {
-    padding: 24,
+    padding: 28,
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 14,
-    color: '#888',
+    fontSize: 13,
+    color: '#AAA',
+    fontWeight: '500',
   },
 });

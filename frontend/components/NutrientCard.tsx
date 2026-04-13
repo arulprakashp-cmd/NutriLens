@@ -3,6 +3,14 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, Alert } fr
 import { Ionicons } from '@expo/vector-icons';
 import { Card as CardType } from '../types';
 import { api } from '../utils/api';
+import {
+  AminoAcidsRenderer, ProteinPlanRenderer, FoodBarsRenderer,
+  MealPlanRenderer, GIScaleRenderer, GIChartRenderer,
+  SugarComparisonRenderer, SwapsRenderer, TargetsRenderer,
+  TimelineRenderer, FatRolesRenderer, FatTypesRenderer,
+  SaturationChartRenderer, MythsRenderer, OmegaBalanceRenderer,
+  CholesterolRenderer, CookingOilsRenderer, FatTargetsRenderer,
+} from './CardRenderers';
 
 interface NutrientCardProps {
   card: CardType;
@@ -26,203 +34,51 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
   };
 
   const renderContent = () => {
-    const { type, body } = card.content;
-
+    const { type } = card.content;
     switch (type) {
-      case 'stats':
-        return renderStatsCard();
-      case 'benefits':
-        return renderBenefitsCard();
-      case 'process':
-        return renderProcessCard();
-      case 'comparison':
-        return renderComparisonCard();
-      case 'split_comparison':
-        return renderSplitComparisonCard();
-      case 'summary':
-        return renderSummaryCard();
-      default:
-        return renderDefaultCard();
+      case 'stats': return <StatsRenderer content={card.content} />;
+      case 'benefits': return <BenefitsRenderer content={card.content} />;
+      case 'process': return <ProcessRenderer content={card.content} />;
+      case 'comparison': return <ComparisonRenderer content={card.content} />;
+      case 'split_comparison': return <SplitComparisonRenderer content={card.content} />;
+      case 'summary': return <SummaryRenderer content={card.content} />;
+      case 'amino_acids': return <AminoAcidsRenderer content={card.content} />;
+      case 'protein_plan': return <ProteinPlanRenderer content={card.content} />;
+      case 'protein_bars': return <FoodBarsRenderer content={card.content} />;
+      case 'fat_bars': return <FoodBarsRenderer content={card.content} />;
+      case 'meal_plan': return <MealPlanRenderer content={card.content} />;
+      case 'gi_scale': return <GIScaleRenderer content={card.content} />;
+      case 'gi_chart': return <GIChartRenderer content={card.content} />;
+      case 'sugar_comparison': return <SugarComparisonRenderer content={card.content} />;
+      case 'swaps': return <SwapsRenderer content={card.content} />;
+      case 'targets': return <TargetsRenderer content={card.content} />;
+      case 'timeline': return <TimelineRenderer content={card.content} />;
+      case 'fat_roles': return <FatRolesRenderer content={card.content} />;
+      case 'fat_types': return <FatTypesRenderer content={card.content} />;
+      case 'saturation_chart': return <SaturationChartRenderer content={card.content} />;
+      case 'myths': return <MythsRenderer content={card.content} />;
+      case 'omega_balance': return <OmegaBalanceRenderer content={card.content} />;
+      case 'cholesterol': return <CholesterolRenderer content={card.content} />;
+      case 'cooking_oils': return <CookingOilsRenderer content={card.content} />;
+      case 'fat_targets': return <FatTargetsRenderer content={card.content} />;
+      default: return <DefaultRenderer content={card.content} />;
     }
   };
 
-  const renderDefaultCard = () => (
-    <>
-      {card.content.body && (
-        <Text style={styles.cardBody}>{card.content.body}</Text>
-      )}
-    </>
-  );
-
-  const renderStatsCard = () => (
-    <>
-      <Text style={styles.cardBody}>{card.content.body}</Text>
-      <View style={styles.statsContainer}>
-        {card.content.stats?.map((stat: any, index: number) => (
-          <View key={index} style={styles.statBox}>
-            <Text style={styles.statValue}>{stat.value}</Text>
-            <Text style={styles.statLabel}>{stat.label}</Text>
-          </View>
-        ))}
-      </View>
-    </>
-  );
-
-  const renderBenefitsCard = () => (
-    <>
-      <Text style={styles.cardBody}>{card.content.body}</Text>
-      <View style={styles.benefitsContainer}>
-        {card.content.benefits?.map((benefit: any, index: number) => (
-          <View key={index} style={styles.benefitItem}>
-            <Text style={styles.benefitIcon}>{benefit.icon}</Text>
-            <View style={styles.benefitText}>
-              <Text style={styles.benefitTitle}>{benefit.title}</Text>
-              <Text style={styles.benefitDescription}>{benefit.description}</Text>
-            </View>
-          </View>
-        ))}
-      </View>
-      {card.content.callout && (
-        <View style={styles.calloutBox}>
-          <Text style={styles.calloutText}>{card.content.callout}</Text>
-        </View>
-      )}
-    </>
-  );
-
-  const renderProcessCard = () => (
-    <>
-      <Text style={styles.cardBody}>{card.content.body}</Text>
-      <View style={styles.processContainer}>
-        {card.content.steps?.map((step: any, index: number) => (
-          <View key={index} style={styles.processStep}>
-            <View style={styles.stepNumber}>
-              <Text style={styles.stepNumberText}>{step.number}</Text>
-            </View>
-            <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>{step.title}</Text>
-              <Text style={styles.stepDescription}>{step.description}</Text>
-            </View>
-          </View>
-        ))}
-      </View>
-      {card.content.callout && (
-        <View style={styles.calloutBox}>
-          <Text style={styles.calloutText}>{card.content.callout}</Text>
-        </View>
-      )}
-    </>
-  );
-
-  const renderComparisonCard = () => (
-    <>
-      <Text style={styles.cardBody}>{card.content.body}</Text>
-      {card.content.macros && (
-        <View style={styles.macrosContainer}>
-          {card.content.macros.map((macro: any, index: number) => (
-            <View key={index} style={styles.macroItem}>
-              <View style={styles.macroHeader}>
-                <Text style={styles.macroName}>{macro.name}</Text>
-                <Text style={styles.macroKcal}>{macro.kcal} kcal/g</Text>
-              </View>
-              <View style={styles.macroBar}>
-                <View style={[styles.macroBarFill, { width: `${(macro.kcal / 9) * 100}%`, backgroundColor: macro.color }]} />
-              </View>
-            </View>
-          ))}
-        </View>
-      )}
-      {card.content.callout && (
-        <View style={styles.calloutBox}>
-          <Text style={styles.calloutText}>{card.content.callout}</Text>
-        </View>
-      )}
-    </>
-  );
-
-  const renderSplitComparisonCard = () => (
-    <>
-      <Text style={styles.cardBody}>{card.content.body}</Text>
-      <View style={styles.splitContainer}>
-        <View style={styles.splitColumn}>
-          <View style={[styles.splitHeader, styles.splitHeaderGood]}>
-            <Text style={styles.splitHeaderText}>✅ Good Carbs</Text>
-          </View>
-          {card.content.good?.map((item: string, index: number) => (
-            <Text key={index} style={styles.splitItem}>{item}</Text>
-          ))}
-        </View>
-        <View style={styles.splitColumn}>
-          <View style={[styles.splitHeader, styles.splitHeaderBad]}>
-            <Text style={styles.splitHeaderText}>❌ Bad Carbs</Text>
-          </View>
-          {card.content.bad?.map((item: string, index: number) => (
-            <Text key={index} style={styles.splitItem}>{item}</Text>
-          ))}
-        </View>
-      </View>
-      {card.content.tip && (
-        <View style={styles.tipBox}>
-          <Text style={styles.tipText}>{card.content.tip}</Text>
-        </View>
-      )}
-    </>
-  );
-
-  const renderSummaryCard = () => (
-    <>
-      {card.content.takeaways && (
-        <View style={styles.summarySection}>
-          <Text style={styles.summaryLabel}>💡 Key Takeaways</Text>
-          {card.content.takeaways.map((item: string, index: number) => (
-            <View key={index} style={styles.summaryItem}>
-              <View style={styles.summaryDot} />
-              <Text style={styles.summaryText}>{item}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-      
-      {card.content.targets && (
-        <View style={styles.summarySection}>
-          <Text style={styles.summaryLabel}>🎯 Daily Targets at a Glance</Text>
-          {card.content.targets.map((target: any, index: number) => (
-            <View key={index} style={styles.targetRow}>
-              <Text style={styles.targetWho}>{target.who}</Text>
-              <Text style={styles.targetAmount}>{target.amount}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-      
-      {card.content.checklist && (
-        <View style={styles.summarySection}>
-          <Text style={styles.summaryLabel}>✅ Action Checklist</Text>
-          {card.content.checklist.map((item: string, index: number) => (
-            <View key={index} style={styles.checklistItem}>
-              <Text style={styles.checkbox}>☐</Text>
-              <Text style={styles.checklistText}>{item}</Text>
-            </View>
-          ))}
-        </View>
-      )}
-    </>
-  );
-
   return (
-    <View style={[styles.cardContainer, { backgroundColor }]}>
-      <ScrollView 
+    <View style={[styles.cardContainer, { backgroundColor }]} testID={`card-${card.card_id}`}>
+      <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.card}>
           {/* Card Header */}
           <View style={styles.cardHeader}>
-            <Text style={styles.cardNumber}>
-              {card.number} / {card.label}
-            </Text>
-            <TouchableOpacity onPress={handleShare} style={styles.shareButton}>
-              <Ionicons name="share-outline" size={20} color="#666" />
+            <View style={styles.chipContainer}>
+              <Text style={styles.cardNumber}>{card.number} / {card.label}</Text>
+            </View>
+            <TouchableOpacity testID={`share-btn-${card.card_id}`} onPress={handleShare} style={styles.shareButton} activeOpacity={0.7}>
+              <Ionicons name="share-social-outline" size={22} color="#C8441A" />
             </TouchableOpacity>
           </View>
 
@@ -235,10 +91,13 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
           {/* Dynamic Content */}
           {renderContent()}
 
-          {/* Progress Indicator */}
+          {/* Progress Bar */}
           <View style={styles.progressContainer}>
+            <View style={styles.progressBar}>
+              <View style={[styles.progressFill, { width: `${((currentIndex + 1) / totalCards) * 100}%` }]} />
+            </View>
             <Text style={styles.progressText}>
-              {currentIndex + 1} of {totalCards} cards
+              {currentIndex + 1} of {totalCards}
             </Text>
           </View>
         </View>
@@ -247,22 +106,189 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
   );
 }
 
+// ========== INLINE BASIC RENDERERS ==========
+
+function DefaultRenderer({ content }: { content: any }) {
+  return content.body ? <Text style={bs.body}>{content.body}</Text> : null;
+}
+
+function StatsRenderer({ content }: { content: any }) {
+  const accentColors = ['#C8441A', '#1A7A6E', '#B8860B'];
+  return (
+    <>
+      <Text style={bs.body}>{content.body}</Text>
+      <View style={bs.statsGrid}>
+        {content.stats?.map((stat: any, i: number) => (
+          <View key={i} style={[bs.statBox, { borderLeftColor: accentColors[i % 3] }]}>
+            <Text style={[bs.statValue, { color: accentColors[i % 3] }]}>{stat.value}</Text>
+            <Text style={bs.statLabel}>{stat.label}</Text>
+          </View>
+        ))}
+      </View>
+    </>
+  );
+}
+
+function BenefitsRenderer({ content }: { content: any }) {
+  const bgColors = ['#FFF0E8', '#E8F5E9', '#FFF8E1', '#E3F2FD'];
+  return (
+    <>
+      <Text style={bs.body}>{content.body}</Text>
+      <View style={{ gap: 10 }}>
+        {content.benefits?.map((b: any, i: number) => (
+          <View key={i} style={[bs.benefitItem, { backgroundColor: bgColors[i % 4] }]}>
+            <View style={bs.benefitIconWrap}><Text style={bs.benefitIcon}>{b.icon}</Text></View>
+            <View style={{ flex: 1 }}>
+              <Text style={bs.benefitTitle}>{b.title}</Text>
+              <Text style={bs.benefitDesc}>{b.description}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+      {content.callout && (
+        <View style={bs.callout}><Text style={bs.calloutText}>{content.callout}</Text></View>
+      )}
+    </>
+  );
+}
+
+function ProcessRenderer({ content }: { content: any }) {
+  return (
+    <>
+      <Text style={bs.body}>{content.body}</Text>
+      <View style={{ gap: 4 }}>
+        {content.steps?.map((step: any, i: number) => (
+          <View key={i} style={bs.processRow}>
+            <View style={bs.processLeft}>
+              <View style={bs.stepCircle}><Text style={bs.stepNum}>{step.number}</Text></View>
+              {i < content.steps.length - 1 && <View style={bs.stepLine} />}
+            </View>
+            <View style={bs.processContent}>
+              <Text style={bs.processTitle}>{step.title}</Text>
+              <Text style={bs.processDesc}>{step.description}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+      {content.callout && (
+        <View style={bs.callout}><Text style={bs.calloutText}>{content.callout}</Text></View>
+      )}
+      {content.hidden_sources && (
+        <View style={{ marginTop: 12 }}>
+          <Text style={bs.body}>Where it hides in India:</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {content.hidden_sources.map((s: string, i: number) => (
+              <View key={i} style={bs.villainTag}><Text style={bs.villainText}>{s}</Text></View>
+            ))}
+          </View>
+        </View>
+      )}
+    </>
+  );
+}
+
+function ComparisonRenderer({ content }: { content: any }) {
+  return (
+    <>
+      <Text style={bs.body}>{content.body}</Text>
+      {content.macros && (
+        <View style={{ gap: 12 }}>
+          {content.macros.map((m: any, i: number) => (
+            <View key={i}>
+              <View style={bs.macroRow}><Text style={bs.macroName}>{m.name}</Text><Text style={[bs.macroKcal, { color: m.color }]}>{m.kcal} kcal/g</Text></View>
+              <View style={bs.macroTrack}><View style={[bs.macroFill, { width: `${(m.kcal / 9) * 100}%`, backgroundColor: m.color }]} /></View>
+            </View>
+          ))}
+        </View>
+      )}
+      {content.callout && (
+        <View style={bs.callout}><Text style={bs.calloutText}>{content.callout}</Text></View>
+      )}
+    </>
+  );
+}
+
+function SplitComparisonRenderer({ content }: { content: any }) {
+  return (
+    <>
+      <Text style={bs.body}>{content.body}</Text>
+      <View style={bs.splitRow}>
+        <View style={bs.splitCol}>
+          <View style={[bs.splitHead, { backgroundColor: '#E8F5E9' }]}><Text style={bs.splitHeadText}>✅ Good Carbs</Text></View>
+          {content.good?.map((item: string, i: number) => (
+            <Text key={i} style={bs.splitItem}>{item}</Text>
+          ))}
+        </View>
+        <View style={bs.splitCol}>
+          <View style={[bs.splitHead, { backgroundColor: '#FFEBEE' }]}><Text style={bs.splitHeadText}>❌ Bad Carbs</Text></View>
+          {content.bad?.map((item: string, i: number) => (
+            <Text key={i} style={bs.splitItem}>{item}</Text>
+          ))}
+        </View>
+      </View>
+      {content.tip && (
+        <View style={[bs.callout, { backgroundColor: '#E3F2FD', borderLeftColor: '#2196F3' }]}>
+          <Text style={bs.calloutText}>{content.tip}</Text>
+        </View>
+      )}
+    </>
+  );
+}
+
+function SummaryRenderer({ content }: { content: any }) {
+  return (
+    <>
+      {content.takeaways && (
+        <View style={bs.summarySection}>
+          <Text style={bs.summaryLabel}>💡 Key Takeaways</Text>
+          {content.takeaways.map((item: string, i: number) => (
+            <View key={i} style={bs.summaryItem}>
+              <View style={bs.summaryDot} />
+              <Text style={bs.summaryText}>{item}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+      {content.targets && (
+        <View style={bs.summarySection}>
+          <Text style={bs.summaryLabel}>🎯 Daily Targets</Text>
+          <View style={bs.targetsBox}>
+            {content.targets.map((t: any, i: number) => (
+              <View key={i} style={bs.targetRow}>
+                <Text style={bs.targetWho}>{t.who}</Text>
+                <Text style={bs.targetAmt}>{t.amount}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
+      {content.checklist && (
+        <View style={bs.summarySection}>
+          <Text style={bs.summaryLabel}>✅ Action Checklist</Text>
+          {content.checklist.map((item: string, i: number) => (
+            <View key={i} style={bs.checkRow}>
+              <View style={bs.checkBox} />
+              <Text style={bs.checkText}>{item}</Text>
+            </View>
+          ))}
+        </View>
+      )}
+    </>
+  );
+}
+
+// ========== MAIN CARD STYLES ==========
 const styles = StyleSheet.create({
-  cardContainer: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 16,
-    paddingBottom: 40,
-  },
+  cardContainer: { flex: 1 },
+  scrollContent: { padding: 16, paddingBottom: 32 },
   card: {
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
     padding: 24,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
     elevation: 5,
   },
   cardHeader: {
@@ -271,256 +297,34 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 16,
   },
+  chipContainer: {
+    backgroundColor: '#F5F5F5',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
   cardNumber: {
-    fontSize: 12,
-    fontWeight: '600',
+    fontSize: 11,
+    fontWeight: '700',
     color: '#888',
     textTransform: 'uppercase',
-    letterSpacing: 1,
+    letterSpacing: 1.2,
   },
   shareButton: {
-    padding: 8,
-  },
-  cardIconLarge: {
-    fontSize: 48,
-    marginBottom: 16,
-  },
-  cardTitle: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1A120A',
-    marginBottom: 16,
-    lineHeight: 32,
-  },
-  cardBody: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: '#444',
-    marginBottom: 20,
-  },
-  // Stats Card Styles
-  statsContainer: {
-    gap: 12,
-  },
-  statBox: {
-    backgroundColor: '#F8F8F8',
-    borderRadius: 12,
-    padding: 16,
-  },
-  statValue: {
-    fontSize: 32,
-    fontWeight: '700',
-    color: '#C8441A',
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
-  },
-  // Benefits Card Styles
-  benefitsContainer: {
-    gap: 16,
-  },
-  benefitItem: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  benefitIcon: {
-    fontSize: 24,
-  },
-  benefitText: {
-    flex: 1,
-  },
-  benefitTitle: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#1A120A',
-    marginBottom: 4,
-  },
-  benefitDescription: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
-  },
-  calloutBox: {
-    backgroundColor: '#FFF5E6',
-    borderLeftWidth: 4,
-    borderLeftColor: '#F0A060',
-    borderRadius: 8,
-    padding: 16,
-    marginTop: 16,
-  },
-  calloutText: {
-    fontSize: 14,
-    color: '#444',
-    lineHeight: 20,
-  },
-  // Process Card Styles
-  processContainer: {
-    gap: 16,
-  },
-  processStep: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  stepNumber: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#C8441A',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: '#FFF5EE',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  stepNumberText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#FFF',
-  },
-  stepContent: {
-    flex: 1,
-  },
-  stepTitle: {
-    fontSize: 16,
-    fontWeight: '700',
+  cardIconLarge: { fontSize: 48, marginBottom: 12 },
+  cardTitle: {
+    fontSize: 24,
+    fontWeight: '800',
     color: '#1A120A',
-    marginBottom: 4,
-  },
-  stepDescription: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 20,
-  },
-  // Comparison Card Styles
-  macrosContainer: {
-    gap: 16,
-  },
-  macroItem: {
-    gap: 8,
-  },
-  macroHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  macroName: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#444',
-  },
-  macroKcal: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#C8441A',
-  },
-  macroBar: {
-    height: 8,
-    backgroundColor: '#F0F0F0',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  macroBarFill: {
-    height: '100%',
-  },
-  // Split Comparison Styles
-  splitContainer: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  splitColumn: {
-    flex: 1,
-  },
-  splitHeader: {
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 12,
-  },
-  splitHeaderGood: {
-    backgroundColor: '#E8F5E9',
-  },
-  splitHeaderBad: {
-    backgroundColor: '#FFEBEE',
-  },
-  splitHeaderText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#1A120A',
-    textAlign: 'center',
-  },
-  splitItem: {
-    fontSize: 13,
-    color: '#444',
-    marginBottom: 8,
-    paddingLeft: 4,
-  },
-  tipBox: {
-    backgroundColor: '#F0F8FF',
-    borderRadius: 8,
-    padding: 16,
-    marginTop: 16,
-  },
-  tipText: {
-    fontSize: 14,
-    color: '#444',
-    lineHeight: 20,
-  },
-  // Summary Card Styles
-  summarySection: {
-    marginBottom: 24,
-  },
-  summaryLabel: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#1A120A',
-    marginBottom: 12,
-  },
-  summaryItem: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 12,
-  },
-  summaryDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-    backgroundColor: '#C8441A',
-    marginTop: 8,
-  },
-  summaryText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#444',
-    lineHeight: 20,
-  },
-  targetRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F0F0F0',
-  },
-  targetWho: {
-    fontSize: 14,
-    color: '#444',
-  },
-  targetAmount: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#C8441A',
-  },
-  checklistItem: {
-    flexDirection: 'row',
-    gap: 12,
-    marginBottom: 12,
-  },
-  checkbox: {
-    fontSize: 16,
-    color: '#888',
-  },
-  checklistText: {
-    flex: 1,
-    fontSize: 14,
-    color: '#444',
-    lineHeight: 20,
+    marginBottom: 16,
+    lineHeight: 32,
   },
   progressContainer: {
     marginTop: 24,
@@ -529,9 +333,76 @@ const styles = StyleSheet.create({
     borderTopColor: '#F0F0F0',
     alignItems: 'center',
   },
+  progressBar: {
+    width: '100%',
+    height: 4,
+    backgroundColor: '#F0F0F0',
+    borderRadius: 2,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#C8441A',
+    borderRadius: 2,
+  },
   progressText: {
     fontSize: 12,
     color: '#888',
     fontWeight: '600',
   },
+});
+
+// ========== BASIC RENDERER STYLES ==========
+const bs = StyleSheet.create({
+  body: { fontSize: 15, lineHeight: 23, color: '#444', marginBottom: 16 },
+  // Stats
+  statsGrid: { gap: 10 },
+  statBox: { backgroundColor: '#FAFAFA', borderRadius: 14, padding: 16, borderLeftWidth: 4 },
+  statValue: { fontSize: 32, fontWeight: '800' },
+  statLabel: { fontSize: 13, color: '#666', lineHeight: 19, marginTop: 4 },
+  // Benefits
+  benefitItem: { flexDirection: 'row', gap: 12, borderRadius: 14, padding: 14 },
+  benefitIconWrap: { width: 44, height: 44, borderRadius: 22, backgroundColor: 'rgba(255,255,255,0.8)', justifyContent: 'center', alignItems: 'center' },
+  benefitIcon: { fontSize: 22 },
+  benefitTitle: { fontSize: 15, fontWeight: '700', color: '#1A120A', marginBottom: 2 },
+  benefitDesc: { fontSize: 13, color: '#555', lineHeight: 19 },
+  callout: { backgroundColor: '#FFF8E1', borderLeftWidth: 4, borderLeftColor: '#F0A060', borderRadius: 10, padding: 14, marginTop: 16 },
+  calloutText: { fontSize: 13, color: '#444', lineHeight: 20 },
+  // Process
+  processRow: { flexDirection: 'row' },
+  processLeft: { width: 36, alignItems: 'center' },
+  stepCircle: { width: 32, height: 32, borderRadius: 16, backgroundColor: '#C8441A', justifyContent: 'center', alignItems: 'center' },
+  stepNum: { fontSize: 15, fontWeight: '700', color: '#FFF' },
+  stepLine: { width: 2, flex: 1, backgroundColor: '#E0E0E0', marginVertical: 4 },
+  processContent: { flex: 1, paddingLeft: 12, paddingBottom: 16 },
+  processTitle: { fontSize: 15, fontWeight: '700', color: '#1A120A', marginBottom: 4 },
+  processDesc: { fontSize: 13, color: '#666', lineHeight: 19 },
+  villainTag: { backgroundColor: '#FFEBEE', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 20 },
+  villainText: { fontSize: 12, color: '#C62828' },
+  // Comparison
+  macroRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  macroName: { fontSize: 14, fontWeight: '600', color: '#444' },
+  macroKcal: { fontSize: 14, fontWeight: '700' },
+  macroTrack: { height: 10, backgroundColor: '#F0F0F0', borderRadius: 5, overflow: 'hidden', marginTop: 6 },
+  macroFill: { height: '100%', borderRadius: 5 },
+  // Split
+  splitRow: { flexDirection: 'row', gap: 10 },
+  splitCol: { flex: 1 },
+  splitHead: { padding: 10, borderRadius: 10, marginBottom: 10 },
+  splitHeadText: { fontSize: 13, fontWeight: '700', color: '#1A120A', textAlign: 'center' },
+  splitItem: { fontSize: 13, color: '#444', marginBottom: 6, paddingLeft: 4 },
+  // Summary
+  summarySection: { marginBottom: 20 },
+  summaryLabel: { fontSize: 16, fontWeight: '700', color: '#1A120A', marginBottom: 12 },
+  summaryItem: { flexDirection: 'row', gap: 10, marginBottom: 10 },
+  summaryDot: { width: 7, height: 7, borderRadius: 4, backgroundColor: '#C8441A', marginTop: 7 },
+  summaryText: { flex: 1, fontSize: 14, color: '#444', lineHeight: 21 },
+  targetsBox: { backgroundColor: '#F8F8F8', borderRadius: 12, padding: 16 },
+  targetRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#EEE' },
+  targetWho: { fontSize: 14, color: '#444' },
+  targetAmt: { fontSize: 14, fontWeight: '700', color: '#C8441A' },
+  checkRow: { flexDirection: 'row', gap: 10, marginBottom: 10 },
+  checkBox: { width: 20, height: 20, borderRadius: 4, borderWidth: 2, borderColor: '#C8441A', marginTop: 2 },
+  checkText: { flex: 1, fontSize: 14, color: '#444', lineHeight: 21 },
 });
