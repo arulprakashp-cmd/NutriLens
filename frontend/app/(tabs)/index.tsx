@@ -58,16 +58,16 @@ export default function HomeScreen() {
             <View style={styles.logoIconWrap}>
               <Ionicons name="leaf" size={22} color="#4CAF50" />
             </View>
-            <Text style={styles.logoText}>Nutrients Story</Text>
+            <Text style={styles.logoText}>Know Your Food</Text>
           </View>
         </View>
 
         {/* Hero Section */}
         <View style={styles.hero}>
           <Text style={styles.heroSubtitle}>Learn about</Text>
-          <Text style={styles.heroTitle}>Nutrients{'\n'}Story</Text>
+          <Text style={styles.heroTitle}>Nutrients</Text>
           <Text style={styles.heroDescription}>
-            Swipe through beautifully designed cards about the three essential macronutrients — built for Indian audiences.
+            Swipe through the beautifully designed cards to understand the essential nutrients better - specially built for Indian audiences.
           </Text>
         </View>
 

@@ -54,8 +54,8 @@ export default function ProteinScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.topicTitle}>{topic.title}</Text>
-        <Text style={styles.topicSubtitle}>{topic.subtitle}</Text>
+        <Text style={styles.topicTitle}>The <Text style={styles.topicHighlight}>Protein</Text> Story</Text>
+        <Text style={styles.topicSubtitle}>WHY IT MATTERS · EVERY BODY · EVERY AGE</Text>
       </View>
 
       {/* Cards */}
@@ -104,17 +104,24 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
     paddingBottom: 12,
+    alignItems: 'center',
   },
   topicTitle: {
     fontSize: 28,
     fontWeight: '700',
     color: '#1A120A',
-    marginBottom: 4,
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  topicHighlight: {
+    color: '#C8441A',
   },
   topicSubtitle: {
-    fontSize: 14,
-    color: '#666',
-    fontStyle: 'italic',
+    fontSize: 12,
+    color: '#1A7A6E',
+    fontWeight: '700',
+    letterSpacing: 1.5,
+    textAlign: 'center',
   },
   cardWrapper: {
     width: width,

@@ -12,13 +12,16 @@ export default function TabsLayout() {
           backgroundColor: '#FFF',
           borderTopWidth: 1,
           borderTopColor: '#E0E0E0',
-          height: 60,
-          paddingBottom: 8,
-          paddingTop: 8,
+          height: 72,
+          paddingBottom: 10,
+          paddingTop: 10,
         },
         tabBarLabelStyle: {
-          fontSize: 11,
-          fontWeight: '600',
+          fontSize: 13,
+          fontWeight: '700',
+        },
+        tabBarIconStyle: {
+          marginBottom: 2,
         },
       }}
     >
@@ -26,8 +29,8 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="home" size={26} color={color} />
           ),
         }}
       />
@@ -35,8 +38,8 @@ export default function TabsLayout() {
         name="protein"
         options={{
           title: 'Protein',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="fitness" size={size} color={color} />
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="fitness" size={26} color={color} />
           ),
         }}
       />
@@ -44,8 +47,8 @@ export default function TabsLayout() {
         name="carbs"
         options={{
           title: 'Carbs',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="nutrition" size={size} color={color} />
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="nutrition" size={26} color={color} />
           ),
         }}
       />
@@ -53,8 +56,8 @@ export default function TabsLayout() {
         name="fats"
         options={{
           title: 'Fats',
-          tabBarIcon: ({ color, size }) => (
-            <Ionicons name="water" size={size} color={color} />
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="water" size={26} color={color} />
           ),
         }}
       />

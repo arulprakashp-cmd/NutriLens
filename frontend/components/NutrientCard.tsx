@@ -61,6 +61,7 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
       case 'cholesterol': return <CholesterolRenderer content={card.content} />;
       case 'cooking_oils': return <CookingOilsRenderer content={card.content} />;
       case 'fat_targets': return <FatTargetsRenderer content={card.content} />;
+      case 'checklist': return <ChecklistRenderer content={card.content} />;
       default: return <DefaultRenderer content={card.content} />;
     }
   };
@@ -231,6 +232,22 @@ function SplitComparisonRenderer({ content }: { content: any }) {
           <Text style={bs.calloutText}>{content.tip}</Text>
         </View>
       )}
+    </>
+  );
+}
+
+function ChecklistRenderer({ content }: { content: any }) {
+  return (
+    <>
+      {content.body && <Text style={bs.body}>{content.body}</Text>}
+      <View style={{ gap: 12 }}>
+        {content.checklist?.map((item: string, i: number) => (
+          <View key={i} style={bs.checkRow}>
+            <View style={bs.checkBox} />
+            <Text style={bs.checkText}>{item}</Text>
+          </View>
+        ))}
+      </View>
     </>
   );
 }

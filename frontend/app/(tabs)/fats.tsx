@@ -54,8 +54,8 @@ export default function FatsScreen() {
     <SafeAreaView style={styles.container} edges={['top']}>
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.topicTitle}>{topic.title}</Text>
-        <Text style={styles.topicSubtitle}>{topic.subtitle}</Text>
+        <Text style={styles.topicTitle}>The <Text style={styles.topicHighlight}>Fat</Text> Story</Text>
+        <Text style={styles.topicSubtitle}>THE MOST MISUNDERSTOOD MACRONUTRIENT · MYTHS BUSTED</Text>
       </View>
 
       {/* Cards */}
@@ -104,17 +104,24 @@ const styles = StyleSheet.create({
   header: {
     padding: 20,
     paddingBottom: 12,
+    alignItems: 'center',
   },
   topicTitle: {
     fontSize: 28,
     fontWeight: '700',
     color: '#1A120A',
-    marginBottom: 4,
+    marginBottom: 6,
+    textAlign: 'center',
+  },
+  topicHighlight: {
+    color: '#7A1A2E',
   },
   topicSubtitle: {
-    fontSize: 14,
-    color: '#666',
-    fontStyle: 'italic',
+    fontSize: 12,
+    color: '#C9960A',
+    fontWeight: '700',
+    letterSpacing: 1.5,
+    textAlign: 'center',
   },
   cardWrapper: {
     width: width,
