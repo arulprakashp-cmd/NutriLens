@@ -1,6 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, Alert } from 'react-native';
+import React, { useRef, useCallback } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Share, Alert, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { captureRef } from 'react-native-view-shot';
+import * as FileSystem from 'expo-file-system';
+import * as Sharing from 'expo-sharing';
 import { Card as CardType } from '../types';
 import { api } from '../utils/api';
 import {
@@ -12,6 +15,8 @@ import {
   CholesterolRenderer, CookingOilsRenderer, FatTargetsRenderer,
 } from './CardRenderers';
 
+const APP_LINK = 'https://knowyourfood.app';
+
 interface NutrientCardProps {
   card: CardType;
   backgroundColor: string;
@@ -20,18 +25,45 @@ interface NutrientCardProps {
 }
 
 export default function NutrientCard({ card, backgroundColor, currentIndex, totalCards }: NutrientCardProps) {
-  const handleShare = async () => {
+  const cardRef = useRef<View>(null);
+
+  const handleShare = useCallback(async () => {
     try {
+      // Try image-based sharing first
+      if (cardRef.current) {
+        try {
+          const uri = await captureRef(cardRef, {
+            format: 'png',
+            quality: 0.85,
+          });
+
+          const isAvailable = await Sharing.isAvailableAsync();
+          if (isAvailable && uri) {
+            // On native: use expo-sharing for image
+            await Sharing.shareAsync(uri, {
+              mimeType: 'image/png',
+              dialogTitle: 'Share this nutrition card',
+            });
+            return;
+          }
+        } catch (imgErr) {
+          // Image capture failed, fall back to text
+          console.log('Image share fallback to text');
+        }
+      }
+
+      // Fallback: text-based share with formatted content + app link
       const shareData = await api.getShareCard(card.card_id);
       await Share.share({
-        message: `${shareData.topic_title}\n\n${shareData.card_number}: ${shareData.card_title}\n\n${shareData.content_text}\n\nFrom Nutrients Story App`,
+        message: `${shareData.topic_title}\n\n${card.icon} ${shareData.card_number}\n${shareData.card_title}\n\n${shareData.content_text}\n\nLearn more: ${APP_LINK}`,
+        title: shareData.card_title,
       });
     } catch (error: any) {
-      if (error.message !== 'Share cancelled') {
-        Alert.alert('Error', 'Failed to share card');
+      if (error?.message !== 'Share cancelled' && error?.message !== 'User did not share') {
+        Alert.alert('Share', 'Could not share this card');
       }
     }
-  };
+  }, [card]);
 
   const renderContent = () => {
     const { type } = card.content;
@@ -72,7 +104,7 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        <View style={styles.card}>
+        <View ref={cardRef} collapsable={false} style={styles.card}>
           {/* Card Header */}
           <View style={styles.cardHeader}>
             <View style={styles.chipContainer}>
@@ -90,9 +122,11 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
           </View>
 
           {/* Dynamic Content */}
-          {renderContent()}
+          <View style={styles.cardBody}>
+            {renderContent()}
+          </View>
 
-          {/* Progress Bar */}
+          {/* Progress Bar - pushed to bottom */}
           <View style={styles.progressContainer}>
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: `${((currentIndex + 1) / totalCards) * 100}%` }]} />
@@ -100,6 +134,12 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
             <Text style={styles.progressText}>
               {currentIndex + 1} of {totalCards}
             </Text>
+          </View>
+
+          {/* App branding for screenshots */}
+          <View style={styles.brandingRow}>
+            <Ionicons name="leaf" size={12} color="#4CAF50" />
+            <Text style={styles.brandingText}>Know Your Food</Text>
           </View>
         </View>
       </ScrollView>
@@ -297,11 +337,13 @@ function SummaryRenderer({ content }: { content: any }) {
 // ========== MAIN CARD STYLES ==========
 const styles = StyleSheet.create({
   cardContainer: { flex: 1 },
-  scrollContent: { padding: 16, paddingBottom: 32 },
+  scrollContent: { flexGrow: 1, padding: 16, paddingBottom: 32 },
   card: {
+    flex: 1,
     backgroundColor: '#FFFFFF',
     borderRadius: 24,
     padding: 24,
+    minHeight: 520,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.08,
@@ -349,9 +391,12 @@ const styles = StyleSheet.create({
     color: '#1A120A',
     lineHeight: 30,
   },
+  cardBody: {
+    flex: 1,
+  },
   progressContainer: {
-    marginTop: 24,
-    paddingTop: 16,
+    marginTop: 'auto' as any,
+    paddingTop: 20,
     borderTopWidth: 1,
     borderTopColor: '#F0F0F0',
     alignItems: 'center',
@@ -372,6 +417,18 @@ const styles = StyleSheet.create({
   progressText: {
     fontSize: 12,
     color: '#888',
+    fontWeight: '600',
+  },
+  brandingRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 6,
+    marginTop: 10,
+  },
+  brandingText: {
+    fontSize: 11,
+    color: '#AAA',
     fontWeight: '600',
   },
 });
