@@ -83,11 +83,11 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
             </TouchableOpacity>
           </View>
 
-          {/* Card Icon */}
-          <Text style={styles.cardIconLarge}>{card.icon}</Text>
-
-          {/* Card Title */}
-          <Text style={styles.cardTitle}>{card.title}</Text>
+          {/* Card Icon + Title Row */}
+          <View style={styles.cardTitleRow}>
+            <Text style={styles.cardIconLarge}>{card.icon}</Text>
+            <Text style={styles.cardTitle}>{card.title}</Text>
+          </View>
 
           {/* Dynamic Content */}
           {renderContent()}
@@ -335,13 +335,19 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  cardIconLarge: { fontSize: 48, marginBottom: 12 },
+  cardTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    marginBottom: 16,
+  },
+  cardIconLarge: { fontSize: 40 },
   cardTitle: {
-    fontSize: 24,
+    flex: 1,
+    fontSize: 22,
     fontWeight: '800',
     color: '#1A120A',
-    marginBottom: 16,
-    lineHeight: 32,
+    lineHeight: 30,
   },
   progressContainer: {
     marginTop: 24,
