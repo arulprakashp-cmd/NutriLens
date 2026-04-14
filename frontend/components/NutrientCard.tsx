@@ -6,6 +6,8 @@ import * as FileSystem from 'expo-file-system';
 import * as Sharing from 'expo-sharing';
 import { Card as CardType } from '../types';
 import { api } from '../utils/api';
+import { useLanguage } from '../utils/LanguageContext';
+import { Language } from '../utils/i18n';
 import {
   AminoAcidsRenderer, ProteinPlanRenderer, FoodBarsRenderer,
   MealPlanRenderer, GIScaleRenderer, GIChartRenderer,
@@ -26,6 +28,12 @@ interface NutrientCardProps {
 
 export default function NutrientCard({ card, backgroundColor, currentIndex, totalCards }: NutrientCardProps) {
   const cardRef = useRef<View>(null);
+  const { language } = useLanguage();
+
+  // Get translated title and body
+  const cardTitle = (language !== 'en' && card.translations?.[language]?.title) || card.title;
+  const cardBody = (language !== 'en' && card.translations?.[language]?.body) || card.content.body;
+  const translatedContent = { ...card.content, body: cardBody };
 
   const handleShare = useCallback(async () => {
     try {
@@ -66,35 +74,35 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
   }, [card]);
 
   const renderContent = () => {
-    const { type } = card.content;
+    const { type } = translatedContent;
     switch (type) {
-      case 'stats': return <StatsRenderer content={card.content} />;
-      case 'benefits': return <BenefitsRenderer content={card.content} />;
-      case 'process': return <ProcessRenderer content={card.content} />;
-      case 'comparison': return <ComparisonRenderer content={card.content} />;
-      case 'split_comparison': return <SplitComparisonRenderer content={card.content} />;
-      case 'summary': return <SummaryRenderer content={card.content} />;
-      case 'amino_acids': return <AminoAcidsRenderer content={card.content} />;
-      case 'protein_plan': return <ProteinPlanRenderer content={card.content} />;
-      case 'protein_bars': return <FoodBarsRenderer content={card.content} />;
-      case 'fat_bars': return <FoodBarsRenderer content={card.content} />;
-      case 'meal_plan': return <MealPlanRenderer content={card.content} />;
-      case 'gi_scale': return <GIScaleRenderer content={card.content} />;
-      case 'gi_chart': return <GIChartRenderer content={card.content} />;
-      case 'sugar_comparison': return <SugarComparisonRenderer content={card.content} />;
-      case 'swaps': return <SwapsRenderer content={card.content} />;
-      case 'targets': return <TargetsRenderer content={card.content} />;
-      case 'timeline': return <TimelineRenderer content={card.content} />;
-      case 'fat_roles': return <FatRolesRenderer content={card.content} />;
-      case 'fat_types': return <FatTypesRenderer content={card.content} />;
-      case 'saturation_chart': return <SaturationChartRenderer content={card.content} />;
-      case 'myths': return <MythsRenderer content={card.content} />;
-      case 'omega_balance': return <OmegaBalanceRenderer content={card.content} />;
-      case 'cholesterol': return <CholesterolRenderer content={card.content} />;
-      case 'cooking_oils': return <CookingOilsRenderer content={card.content} />;
-      case 'fat_targets': return <FatTargetsRenderer content={card.content} />;
-      case 'checklist': return <ChecklistRenderer content={card.content} />;
-      default: return <DefaultRenderer content={card.content} />;
+      case 'stats': return <StatsRenderer content={translatedContent} />;
+      case 'benefits': return <BenefitsRenderer content={translatedContent} />;
+      case 'process': return <ProcessRenderer content={translatedContent} />;
+      case 'comparison': return <ComparisonRenderer content={translatedContent} />;
+      case 'split_comparison': return <SplitComparisonRenderer content={translatedContent} />;
+      case 'summary': return <SummaryRenderer content={translatedContent} />;
+      case 'amino_acids': return <AminoAcidsRenderer content={translatedContent} />;
+      case 'protein_plan': return <ProteinPlanRenderer content={translatedContent} />;
+      case 'protein_bars': return <FoodBarsRenderer content={translatedContent} />;
+      case 'fat_bars': return <FoodBarsRenderer content={translatedContent} />;
+      case 'meal_plan': return <MealPlanRenderer content={translatedContent} />;
+      case 'gi_scale': return <GIScaleRenderer content={translatedContent} />;
+      case 'gi_chart': return <GIChartRenderer content={translatedContent} />;
+      case 'sugar_comparison': return <SugarComparisonRenderer content={translatedContent} />;
+      case 'swaps': return <SwapsRenderer content={translatedContent} />;
+      case 'targets': return <TargetsRenderer content={translatedContent} />;
+      case 'timeline': return <TimelineRenderer content={translatedContent} />;
+      case 'fat_roles': return <FatRolesRenderer content={translatedContent} />;
+      case 'fat_types': return <FatTypesRenderer content={translatedContent} />;
+      case 'saturation_chart': return <SaturationChartRenderer content={translatedContent} />;
+      case 'myths': return <MythsRenderer content={translatedContent} />;
+      case 'omega_balance': return <OmegaBalanceRenderer content={translatedContent} />;
+      case 'cholesterol': return <CholesterolRenderer content={translatedContent} />;
+      case 'cooking_oils': return <CookingOilsRenderer content={translatedContent} />;
+      case 'fat_targets': return <FatTargetsRenderer content={translatedContent} />;
+      case 'checklist': return <ChecklistRenderer content={translatedContent} />;
+      default: return <DefaultRenderer content={translatedContent} />;
     }
   };
 
@@ -118,7 +126,7 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
           {/* Card Icon + Title Row */}
           <View style={styles.cardTitleRow}>
             <Text style={styles.cardIconLarge}>{card.icon}</Text>
-            <Text style={styles.cardTitle}>{card.title}</Text>
+            <Text style={styles.cardTitle}>{cardTitle}</Text>
           </View>
 
           {/* Dynamic Content */}

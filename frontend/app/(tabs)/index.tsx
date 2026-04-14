@@ -85,8 +85,12 @@ export default function HomeScreen() {
                   <Text style={styles.topicEmoji}>{topic.emoji}</Text>
                 </View>
                 <View style={styles.topicInfo}>
-                  <Text style={styles.topicTitle}>{topic.title}</Text>
-                  <Text style={styles.topicDescription}>{topic.description}</Text>
+                  <Text style={styles.topicTitle}>
+                    {(language !== 'en' && topic.translations?.[language]?.title) || topic.title}
+                  </Text>
+                  <Text style={styles.topicDescription}>
+                    {(language !== 'en' && topic.translations?.[language]?.description) || topic.description}
+                  </Text>
                 </View>
                 <View style={[styles.topicArrow, { backgroundColor: theme.accent }]}>
                   <Ionicons name="chevron-forward" size={18} color="#FFF" />

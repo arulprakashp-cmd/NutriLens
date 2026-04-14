@@ -36,6 +36,8 @@ A mobile nutrition education app (renamed from "Know Your Food") that presents i
 - `GET /api/share/{card_id}` - Get formatted share data
 
 ## Multi-language Support
-- UI labels: Fully translated (English, Tamil, Hindi)
-- Card content: English only (expandable via MongoDB)
+- UI labels: Fully translated (English, Tamil, Hindi) via i18n.ts
+- Card content: Fully translated titles and body text for all 72 cards in Tamil and Hindi, stored in MongoDB `translations` field
+- Topic-level translations: Topic titles, subtitles, descriptions translated
 - Language selection: Persisted via AsyncStorage
+- Frontend: NutrientCard reads `card.translations[lang].title/body` with English fallback

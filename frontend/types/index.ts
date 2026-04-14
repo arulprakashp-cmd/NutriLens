@@ -1,15 +1,3 @@
-export interface TopicSummary {
-  topic_id: string;
-  key: string;
-  title: string;
-  description: string;
-  icon_name: string;
-  emoji: string;
-  background_color: string;
-  card_count: number;
-  order: number;
-}
-
 export interface Card {
   card_id: string;
   number: string;
@@ -18,6 +6,7 @@ export interface Card {
   title: string;
   order: number;
   content: CardContent;
+  translations?: { [lang: string]: { title?: string; body?: string } };
 }
 
 export interface CardContent {
@@ -38,4 +27,18 @@ export interface Topic {
   card_count: number;
   cards: Card[];
   order: number;
+  translations?: { [lang: string]: { title?: string; subtitle?: string; description?: string } };
+}
+
+export interface TopicSummary {
+  topic_id: string;
+  key: string;
+  title: string;
+  description: string;
+  icon_name: string;
+  emoji: string;
+  background_color: string;
+  card_count: number;
+  order: number;
+  translations?: { [lang: string]: { title?: string; description?: string } };
 }

@@ -56,7 +56,8 @@ async def get_all_topics():
                 emoji=topic["emoji"],
                 background_color=topic["background_color"],
                 card_count=topic["card_count"],
-                order=topic["order"]
+                order=topic["order"],
+                translations=topic.get("translations")
             )
             for topic in topics
         ]
