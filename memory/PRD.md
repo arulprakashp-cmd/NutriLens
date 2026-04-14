@@ -1,27 +1,33 @@
-# Nutrients Story - Product Requirements Document
+# NutriLens - Product Requirements Document
 
 ## Overview
-A mobile nutrition education app that presents information about three essential macronutrients (Protein, Carbs, Fats) in beautifully designed, swipeable card format. Built for Indian audiences with culturally relevant food sources and dietary recommendations.
+A mobile nutrition education app (renamed from "Know Your Food") that presents information about six essential nutrient topics through beautifully designed, swipeable cards. Built for Indian audiences with culturally relevant food sources and dietary recommendations.
 
 ## Core Features
-- **Home Screen**: Overview of 3 nutrition topics with colorful topic cards
-- **Tab Navigation**: 4 bottom tabs (Home, Protein, Carbs, Fats) with vector icons
+- **Home Screen**: Overview of 6 nutrition topics with colorful themed cards
+- **Stack Navigation**: Home + Language tabs, topics open in full-screen stack screens
 - **Swipeable Cards**: Horizontal card swiping with progress indicator
 - **Rich Content Types**: 25+ card type renderers (stats, benefits, timelines, GI charts, food bars, meal plans, myths, etc.)
-- **Share Feature**: Native share functionality for individual cards
+- **Share Feature**: Image-based sharing (react-native-view-shot) with text+link fallback
+- **NutriLens Branding**: Watermark on cards for shared screenshots
 - **MongoDB Storage**: Content stored in database for easy expansion
+- **Multi-language**: English, Tamil, Hindi support (UI labels translated)
+
+## Topics (6 total, 72 cards)
+- **Protein Story**: 10 cards - protein gap, amino acids, daily targets, Indian sources, meal plans
+- **Carbs Story**: 13 cards - GI index, millet myth, diabetes risk, sugar truth, smart swaps
+- **Fats Story**: 14 cards - myths busted, fat types, trans fat, cholesterol, cooking oils
+- **Fibre Story**: 11 cards - gut health, weight loss, disease prevention, Indian sources
+- **Vitamins & Minerals Story**: 13 cards - D, B12, Iron, Calcium, Zinc, supplement guide
+- **Hydration Story**: 11 cards - water needs, electrolytes, traditional Indian drinks
 
 ## Tech Stack
 - **Frontend**: React Native (Expo SDK 54) with expo-router
 - **Backend**: FastAPI (Python)
 - **Database**: MongoDB
-- **Navigation**: Bottom tabs via @react-navigation/bottom-tabs
-- **Sharing**: expo-sharing + React Native Share API
-
-## Content
-- **Protein Story**: 9 cards (protein gap, amino acids, daily targets, Indian food sources, meal plans)
-- **Carbs Story**: 12 cards (GI index, millet myth, diabetes risk, sugar truth, smart swaps)
-- **Fats Story**: 13 cards (myths busted, fat types, trans fat, cholesterol, cooking oils, omega balance)
+- **Navigation**: Bottom tabs (Home + Language) + Stack screens for topics
+- **Sharing**: react-native-view-shot + expo-sharing
+- **i18n**: Custom translation system with Language context
 
 ## API Endpoints
 - `GET /api/topics` - List all topics
@@ -29,10 +35,7 @@ A mobile nutrition education app that presents information about three essential
 - `GET /api/cards/{card_id}` - Get individual card
 - `GET /api/share/{card_id}` - Get formatted share data
 
-## Future Enhancements
-- Add more nutrition topics (Vitamins, Minerals, Water)
-- User accounts with bookmarking and progress tracking
-- Personalized daily targets based on user profile
-- Multi-language support (Hindi, Tamil, Bengali, etc.)
-- Push notifications with daily nutrition tips
-- **Monetization**: Premium content packs, affiliate links to health products
+## Multi-language Support
+- UI labels: Fully translated (English, Tamil, Hindi)
+- Card content: English only (expandable via MongoDB)
+- Language selection: Persisted via AsyncStorage

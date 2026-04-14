@@ -15,7 +15,7 @@ import {
   CholesterolRenderer, CookingOilsRenderer, FatTargetsRenderer,
 } from './CardRenderers';
 
-const APP_LINK = 'https://knowyourfood.app';
+const APP_LINK = 'https://nutrilens.app';
 
 interface NutrientCardProps {
   card: CardType;

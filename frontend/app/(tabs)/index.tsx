@@ -5,22 +5,22 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Ionicons } from '@expo/vector-icons';
 import { TopicSummary } from '../../types';
 import { api } from '../../utils/api';
+import { useLanguage } from '../../utils/LanguageContext';
+import { t } from '../../utils/i18n';
 
 const TOPIC_THEMES: Record<string, { gradient: string; accent: string; iconBg: string }> = {
   protein: { gradient: '#FFF0E8', accent: '#C8441A', iconBg: '#FFE0CC' },
   carbs: { gradient: '#FFF8E1', accent: '#B8860B', iconBg: '#FFE8A0' },
   fats: { gradient: '#F3EDE4', accent: '#7A1A2E', iconBg: '#F0D8C8' },
-};
-
-const TOPIC_ICONS: Record<string, string> = {
-  protein: 'fitness',
-  carbs: 'nutrition',
-  fats: 'water',
+  fibre: { gradient: '#E8F5E9', accent: '#2E7D32', iconBg: '#C8E6C9' },
+  vitamins: { gradient: '#E3F2FD', accent: '#1565C0', iconBg: '#BBDEFB' },
+  hydration: { gradient: '#E0F7FA', accent: '#00838F', iconBg: '#B2EBF2' },
 };
 
 export default function HomeScreen() {
   const [topics, setTopics] = useState<TopicSummary[]>([]);
   const [loading, setLoading] = useState(true);
+  const { language } = useLanguage();
 
   useEffect(() => {
     loadTopics();
@@ -38,7 +38,7 @@ export default function HomeScreen() {
   };
 
   const navigateToTopic = (key: string) => {
-    router.push(`/(tabs)/${key}` as any);
+    router.push(`/topic/${key}` as any);
   };
 
   if (loading) {
@@ -56,26 +56,23 @@ export default function HomeScreen() {
         <View style={styles.header}>
           <View style={styles.logoContainer}>
             <View style={styles.logoIconWrap}>
-              <Ionicons name="leaf" size={22} color="#4CAF50" />
+              <Ionicons name="eye" size={22} color="#C8441A" />
             </View>
-            <Text style={styles.logoText}>Know Your Food</Text>
+            <Text style={styles.logoText}>{t('app_name', language)}</Text>
           </View>
         </View>
 
         {/* Hero Section */}
         <View style={styles.hero}>
-          <Text style={styles.heroSubtitle}>Learn about</Text>
-          <Text style={styles.heroTitle}>Nutrients</Text>
-          <Text style={styles.heroDescription}>
-            Swipe through the beautifully designed cards to understand the essential nutrients better - specially built for Indian audiences.
-          </Text>
+          <Text style={styles.heroSubtitle}>{t('learn_about', language)}</Text>
+          <Text style={styles.heroTitle}>{t('nutrients', language)}</Text>
+          <Text style={styles.heroDescription}>{t('home_description', language)}</Text>
         </View>
 
         {/* Topic Cards */}
         <View style={styles.topicsContainer}>
           {topics.map((topic) => {
             const theme = TOPIC_THEMES[topic.key] || TOPIC_THEMES.protein;
-            const iconName = TOPIC_ICONS[topic.key] || 'help-circle';
             return (
               <TouchableOpacity
                 key={topic.topic_id}
@@ -101,7 +98,7 @@ export default function HomeScreen() {
 
         {/* Footer */}
         <View style={styles.footer}>
-          <Text style={styles.footerText}>Swipe cards within each story →</Text>
+          <Text style={styles.footerText}>{t('swipe_hint', language)}</Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -109,112 +106,24 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FAF9F7',
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#FAF9F7',
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 12,
-    paddingBottom: 8,
-  },
-  logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  logoIconWrap: {
-    width: 40,
-    height: 40,
-    borderRadius: 12,
-    backgroundColor: '#E8F5E9',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  logoText: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#1A120A',
-  },
-  hero: {
-    paddingHorizontal: 24,
-    paddingTop: 24,
-    paddingBottom: 16,
-  },
-  heroSubtitle: {
-    fontSize: 15,
-    color: '#888',
-    marginBottom: 4,
-    fontWeight: '500',
-  },
-  heroTitle: {
-    fontSize: 40,
-    fontWeight: '800',
-    color: '#1A120A',
-    marginBottom: 12,
-    lineHeight: 46,
-  },
-  heroDescription: {
-    fontSize: 15,
-    lineHeight: 23,
-    color: '#666',
-  },
-  topicsContainer: {
-    paddingHorizontal: 20,
-    gap: 14,
-  },
-  topicCard: {
-    flexDirection: 'row',
-    borderRadius: 20,
-    padding: 20,
-    alignItems: 'center',
-  },
-  topicIconWrap: {
-    width: 56,
-    height: 56,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 14,
-  },
-  topicEmoji: {
-    fontSize: 28,
-  },
-  topicInfo: {
-    flex: 1,
-  },
-  topicTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: '#1A120A',
-    marginBottom: 4,
-  },
-  topicDescription: {
-    fontSize: 13,
-    color: '#666',
-    lineHeight: 18,
-  },
-  topicArrow: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 8,
-  },
-  footer: {
-    padding: 28,
-    alignItems: 'center',
-  },
-  footerText: {
-    fontSize: 13,
-    color: '#AAA',
-    fontWeight: '500',
-  },
+  container: { flex: 1, backgroundColor: '#FAF9F7' },
+  loadingContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#FAF9F7' },
+  header: { paddingHorizontal: 20, paddingTop: 12, paddingBottom: 8 },
+  logoContainer: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  logoIconWrap: { width: 40, height: 40, borderRadius: 12, backgroundColor: '#FFF0E8', justifyContent: 'center', alignItems: 'center' },
+  logoText: { fontSize: 24, fontWeight: '800', color: '#1A120A' },
+  hero: { paddingHorizontal: 24, paddingTop: 20, paddingBottom: 12 },
+  heroSubtitle: { fontSize: 15, color: '#888', marginBottom: 4, fontWeight: '500' },
+  heroTitle: { fontSize: 38, fontWeight: '800', color: '#1A120A', marginBottom: 10 },
+  heroDescription: { fontSize: 15, lineHeight: 23, color: '#666' },
+  topicsContainer: { paddingHorizontal: 20, gap: 12 },
+  topicCard: { flexDirection: 'row', borderRadius: 20, padding: 18, alignItems: 'center' },
+  topicIconWrap: { width: 52, height: 52, borderRadius: 16, justifyContent: 'center', alignItems: 'center', marginRight: 14 },
+  topicEmoji: { fontSize: 26 },
+  topicInfo: { flex: 1 },
+  topicTitle: { fontSize: 16, fontWeight: '700', color: '#1A120A', marginBottom: 3 },
+  topicDescription: { fontSize: 12, color: '#666', lineHeight: 17 },
+  topicArrow: { width: 30, height: 30, borderRadius: 15, justifyContent: 'center', alignItems: 'center', marginLeft: 8 },
+  footer: { padding: 24, alignItems: 'center' },
+  footerText: { fontSize: 13, color: '#AAA', fontWeight: '500' },
 });

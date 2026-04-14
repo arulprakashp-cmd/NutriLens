@@ -35,29 +35,11 @@ export default function TabsLayout() {
         }}
       />
       <Tabs.Screen
-        name="protein"
+        name="language"
         options={{
-          title: 'Protein',
+          title: 'Language',
           tabBarIcon: ({ color }) => (
-            <Ionicons name="fitness" size={26} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="carbs"
-        options={{
-          title: 'Carbs',
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="nutrition" size={26} color={color} />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="fats"
-        options={{
-          title: 'Fats',
-          tabBarIcon: ({ color }) => (
-            <Ionicons name="water" size={26} color={color} />
+            <Ionicons name="language" size={26} color={color} />
           ),
         }}
       />
