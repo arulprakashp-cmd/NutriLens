@@ -12,7 +12,7 @@ class Card(BaseModel):
     title: str
     content: Dict[str, Any]  # Flexible structure for different card types
     order: int
-    translations: Optional[Dict[str, Dict[str, str]]] = None
+    translations: Optional[Dict[str, Dict[str, Any]]] = None
 
 
 class Topic(BaseModel):
@@ -28,7 +28,7 @@ class Topic(BaseModel):
     card_count: int
     cards: List[Card]
     order: int
-    translations: Optional[Dict[str, Dict[str, str]]] = None
+    translations: Optional[Dict[str, Dict[str, Any]]] = None
     created_at: datetime = Field(default_factory=datetime.utcnow)
 
 
@@ -43,7 +43,7 @@ class TopicSummary(BaseModel):
     background_color: str
     card_count: int
     order: int
-    translations: Optional[Dict[str, Dict[str, str]]] = None
+    translations: Optional[Dict[str, Dict[str, Any]]] = None
 
 
 class ShareCard(BaseModel):

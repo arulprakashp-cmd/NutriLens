@@ -32,8 +32,28 @@ export default function NutrientCard({ card, backgroundColor, currentIndex, tota
 
   // Get translated title and body
   const cardTitle = (language !== 'en' && card.translations?.[language]?.title) || card.title;
-  const cardBody = (language !== 'en' && card.translations?.[language]?.body) || card.content.body;
-  const translatedContent = { ...card.content, body: cardBody };
+  const trans = (language !== 'en' && card.translations?.[language]) || null;
+  const translatedContent = (() => {
+    if (!trans) return card.content;
+    const c = JSON.parse(JSON.stringify(card.content));
+    if (trans.body) c.body = trans.body;
+    if (trans.callout) c.callout = trans.callout;
+    if (trans.stats && c.stats) c.stats = c.stats.map((s: any, i: number) => ({ ...s, ...(trans.stats[i] || {}) }));
+    if (trans.benefits && c.benefits) c.benefits = c.benefits.map((b: any, i: number) => ({ ...b, ...(trans.benefits[i] || {}) }));
+    if (trans.steps && c.steps) c.steps = c.steps.map((s: any, i: number) => ({ ...s, ...(trans.steps[i] || {}) }));
+    if (trans.takeaways) c.takeaways = trans.takeaways;
+    if (trans.checklist) c.checklist = trans.checklist;
+    if (trans.good) c.good = trans.good;
+    if (trans.bad) c.bad = trans.bad;
+    if (trans.tip) c.tip = trans.tip;
+    if (trans.types && c.types) c.types = c.types.map((t: any, i: number) => ({ ...t, ...(trans.types[i] || {}) }));
+    if (trans.myths && c.myths) c.myths = c.myths.map((m: any, i: number) => ({ ...m, ...(trans.myths[i] || {}) }));
+    if (trans.info && c.info) c.info = c.info.map((inf: any, i: number) => ({ ...inf, ...(trans.info[i] || {}) }));
+    if (trans.roles && c.roles) c.roles = c.roles.map((r: any, i: number) => ({ ...r, ...(trans.roles[i] || {}) }));
+    if (trans.targets && c.targets) c.targets = c.targets.map((t: any, i: number) => ({ ...t, ...(trans.targets[i] || {}) }));
+    if (trans.swaps && c.swaps) c.swaps = c.swaps.map((sw: any, i: number) => ({ ...sw, ...(trans.swaps[i] || {}) }));
+    return c;
+  })();
 
   const handleShare = useCallback(async () => {
     try {

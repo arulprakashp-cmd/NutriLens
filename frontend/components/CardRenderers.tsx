@@ -140,7 +140,8 @@ export function FoodBarsRenderer({ content }: { content: any }) {
 export function MealPlanRenderer({ content }: { content: any }) {
   const mealColors = ['#FFF3E0', '#FFFDE7', '#F1F8E9', '#EDE7F6'];
   const mealBorders = ['#FF9800', '#FFC107', '#8BC34A', '#7E57C2'];
-  const valueKey = content.meals?.[0]?.items?.[0]?.protein !== undefined ? 'protein' : 'fat';
+  const hasGrams = content.meals?.[0]?.items?.[0]?.protein !== undefined && content.meals[0].items[0].protein !== 0;
+  const valueKey = hasGrams ? (content.meals?.[0]?.items?.[0]?.protein !== undefined ? 'protein' : 'fat') : null;
   return (
     <>
       <Text style={s.bodyText}>{content.body}</Text>
@@ -156,7 +157,11 @@ export function MealPlanRenderer({ content }: { content: any }) {
           {meal.items?.map((item: any, j: number) => (
             <View key={j} style={[s.mealItem, item.muted && s.mealItemMuted]}>
               <Text style={[s.mealFood, item.muted && s.mealFoodMuted]} numberOfLines={2}>{item.food}</Text>
-              <Text style={s.mealGrams}>{item[valueKey]}g</Text>
+              {item.tag ? (
+                <View style={s.mealTag}><Text style={s.mealTagText}>{item.tag}</Text></View>
+              ) : valueKey && item[valueKey] ? (
+                <Text style={s.mealGrams}>{item[valueKey]}g</Text>
+              ) : null}
             </View>
           ))}
         </View>
@@ -683,6 +688,8 @@ const s = StyleSheet.create({
   mealFood: { flex: 1, fontSize: 13, color: '#444' },
   mealFoodMuted: { fontStyle: 'italic' },
   mealGrams: { fontSize: 13, fontWeight: '700', color: '#C8441A', marginLeft: 8 },
+  mealTag: { backgroundColor: '#E3F2FD', paddingHorizontal: 8, paddingVertical: 3, borderRadius: 10, marginLeft: 8 },
+  mealTagText: { fontSize: 11, fontWeight: '700', color: '#1565C0' },
   dailyTotal: { flexDirection: 'row', justifyContent: 'space-between', backgroundColor: '#1A120A', borderRadius: 12, padding: 16, marginTop: 8 },
   dailyTotalLabel: { fontSize: 15, fontWeight: '600', color: '#FFF' },
   dailyTotalValue: { fontSize: 15, fontWeight: '700', color: '#5DBE7A' },
